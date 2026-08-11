@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Visit Transaction Entry</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 16px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: white;
+            border: 1px solid #4b5563;
+            border-radius: 12px;
+            padding: 80px 55px;
+            width: 95%;
+            max-width: 1100px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .inner-card {
+            background-color: #ede9fe;
+            border: 1px solid #c4b5fd;
+            border-radius: 10px;
+            padding: 25px 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: white;
+            background-color: #7c3aed;
+            padding: 10px 35px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 22px;
+            display: table;
+            margin: 0 auto 10px auto;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: white;
+            background-color: #6d28d9;
+            padding: 8px 32px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            display: table;
+            margin: 0 auto 20px auto;
+            font-weight: 500;
+        }
+
+        #form_msg {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: green;
+            margin-bottom: 5px;
+            min-height: 18px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 40px;
+        }
+
+        form > div {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            width: 130px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .info-icon {
+            color: #7c3aed;
+            font-weight: normal;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        input, select, textarea {
+            width: 210px;
+            padding: 6px 12px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 13px;
+            background-color: white;
+            outline: none;
+            color: #1f2937;
+            font-family: inherit;
+        }
+
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 140px;
+            width: 450px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #7c3aed;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            margin-top: 4px;
+        }
+        .suggestion-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        .suggestion-table thead {
+            position: sticky;
+            top: 0;
+            background-color: #f3f4f6;
+            z-index: 10;
+            border-bottom: 2px solid #7c3aed;
+        }
+        .suggestion-table th {
+            padding: 8px 10px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 12px;
+        }
+        .suggestion-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1f2937;
+        }
+        .suggestion-table tbody tr:hover {
+            background-color: #f5f3ff;
+            cursor: pointer;
+        }
+
+        textarea {
+            height: 60px;
+            resize: vertical;
+        }
+
+        .w-short {
+            width: 90px !important;
+        }
+
+        .w-long {
+            width: 225px !important;
+        }
+
+        .w-id-row {
+            width: 240px !important;
+        }
+
+        #opd_visit_id {
+            width: 120px !important;
+            flex: none !important;
+        }
+
+        input[readonly] {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+
+        input:disabled, textarea:disabled {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+        }
+
+        .required {
+            color: red;
+            margin-right: 2px;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 60px;
+            padding-bottom: 10px;
+        }
+
+        button {
+            padding: 7px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        button[type="submit"] {
+            background-color: #10b981;
+            color: white;
+        }
+        button[type="submit"]:hover {
+            background-color: #059669;
+        }
+
+        #prev_btn, #next_btn {
+            background-color: #7c3aed;
+            color: white;
+            min-width: 80px;
+        }
+        #prev_btn:hover, #next_btn:hover { background-color: #6d28d9; }
+
+        #exit_btn {
+            background-color: #ef4444;
+            color: white;
+        }
+        #exit_btn:hover { background-color: #dc2626; }
+
+        .find-new-group {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #7c3aed;
+            margin-left: 8px;
+        }
+
+        .find-new-group button {
+            background-color: white;
+            color: #7c3aed;
+            border: none;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .find-new-group button.active {
+            background-color: #7c3aed !important;
+            color: white !important;
+        }
+
+        .find-new-group button:not(.active):hover {
+            background-color: #ede9fe;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            width: 210px;
+        }
+
+        dialog {
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin: auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            outline: none;
+            width: 350px;
+            font-family: inherit;
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        #modal_text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        #modal_close_btn {
+            background-color: #7c3aed;
+            color: white;
+            padding: 7px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #unsaved_modal {
+            border: none;
+            border-radius: 12px;
+            padding: 30px;
+            width: 420px;
+            font-family: inherit;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        #unsaved_modal h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #unsaved_modal p {
+            font-size: 14px;
+            color: #4b5563;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+        .unsaved-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        #unsaved_save_btn {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #unsaved_discard_btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #unsaved_cancel_btn {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Hospital Management System</h1>
+        <h2>OPD Visit Transaction Entry</h2>
+        <div id="form_msg"></div>
+
+        <div class="inner-card">
+            <form id="opd_visit_form" novalidate>
+                
+                <div>
+                    <label for="opd_visit_id">OPD Visit ID <span class="info-icon" data-help="Unique auto-generated OPD Visit ID identifier.">ⓘ</span>:</label>
+                    <div class="input-row w-id-row">
+                        <input type="text" id="opd_visit_id" readonly>
+                        <div class="find-new-group">
+                            <button type="button" id="find_btn">Find</button>
+                            <button type="button" id="new_btn" class="active">New</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative;">
+                    <label for="appt_search">Appointment Ref <span class="required">*</span> <span class="info-icon" data-help="Search appointment by ID, patient name, UHID, or doctor name.">ⓘ</span>:</label>
+                    <input type="hidden" id="appointment_id">
+                    <input type="text" id="appt_search" class="w-long" autocomplete="off">
+                    <div id="appt_suggestions" class="suggestions-list" style="display:none;"></div>
+                </div>
+
+                <div>
+                    <label for="chief_complaint">Chief Complaint <span class="required">*</span>:</label>
+                    <input type="text" id="chief_complaint" class="w-long" required>
+                </div>
+
+                <div>
+                    <label for="diagnosis">Doctor Diagnosis <span class="required">*</span>:</label>
+                    <input type="text" id="diagnosis" class="w-long" required>
+                </div>
+
+                <div>
+                    <label for="prescription_notes">Prescription Notes:</label>
+                    <textarea id="prescription_notes" class="w-long" rows="3"></textarea>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="buttons-container">
+            <button type="button" id="save_btn">Save</button>
+            <button type="button" id="prev_btn">Previous</button>
+            <button type="button" id="next_btn">Next</button>
+            <button type="button" id="exit_btn">Exit</button>
+        </div>
+
+    </div>
+
+    <dialog id="custom_modal">
+        <div class="modal-content">
+            <p id="modal_text"></p>
+            <button type="button" id="modal_close_btn">OK</button>
+        </div>
+    </dialog>
+
+    <dialog id="unsaved_modal">
+        <h3>Unsaved Changes</h3>
+        <p>You have unsaved changes. Save before moving on?</p>
+        <div class="unsaved-btns">
+            <button type="button" id="unsaved_save_btn">Yes</button>
+            <button type="button" id="unsaved_discard_btn">No</button>
+            <button type="button" id="unsaved_cancel_btn">Cancel</button>
+        </div>
+    </dialog>
+
+    <script src="opd_visit.js"></script>
+
+</body>
+</html>

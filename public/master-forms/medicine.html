@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Medicine Master Entry</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 16px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: white;
+            border: 1px solid #4b5563;
+            border-radius: 12px;
+            padding: 80px 55px;
+            width: 95%;
+            max-width: 1100px;
+            min-height: 620px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inner-card {
+            background-color: #ede9fe;
+            border: 1px solid #c4b5fd;
+            border-radius: 10px;
+            padding: 25px 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: white;
+            background-color: #7c3aed;
+            padding: 10px 35px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 22px;
+            display: table;
+            margin: 0 auto 10px auto;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: white;
+            background-color: #6d28d9;
+            padding: 8px 32px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            display: table;
+            margin: 0 auto 20px auto;
+            font-weight: 500;
+        }
+
+        #form_msg {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: green;
+            margin-bottom: 5px;
+            min-height: 18px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 40px;
+        }
+
+        form > div {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            width: 130px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .info-icon {
+            color: #7c3aed;
+            font-weight: normal;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        input {
+            width: 210px;
+            padding: 6px 12px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 13px;
+            background-color: white;
+            outline: none;
+            color: #1f2937;
+            font-family: inherit;
+        }
+
+        .w-short {
+            width: 90px !important;
+        }
+
+        .w-medium {
+            width: 110px !important;
+        }
+
+        .w-long {
+            width: 225px !important;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .w-id-row {
+            width: 240px !important;
+        }
+
+        #medicine_id {
+            width: 120px !important;
+            flex: none !important;
+        }
+
+        input[readonly] {
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            border-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+
+        input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .required {
+            color: red;
+            margin-right: 2px;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 55px;
+            padding-bottom: 10px;
+        }
+
+        .buttons-container button {
+            padding: 7px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        #save_btn {
+            background-color: #10b981;
+            color: white;
+        }
+        #save_btn:hover { background-color: #059669; }
+
+        #prev_btn, #next_btn {
+            background-color: #7c3aed;
+            color: white;
+            min-width: 80px;
+        }
+        #prev_btn:hover, #next_btn:hover { background-color: #6d28d9; }
+
+        #exit_btn {
+            background-color: #ef4444;
+            color: white;
+        }
+        #exit_btn:hover { background-color: #dc2626; }
+
+        .buttons-container button:disabled {
+            background-color: #d1d5db !important;
+            color: #9ca3af !important;
+            cursor: not-allowed !important;
+        }
+
+        .find-new-group {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #7c3aed;
+            margin-left: 8px;
+        }
+
+        .find-new-group button {
+            background-color: white;
+            color: #7c3aed;
+            border: none;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .find-new-group button.active {
+            background-color: #7c3aed !important;
+            color: white !important;
+        }
+
+        .find-new-group button:not(.active):hover {
+            background-color: #ede9fe;
+        }
+
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 140px;
+            width: 320px;
+            max-height: 180px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #7c3aed;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            margin-top: 4px;
+        }
+        .suggestion-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        .suggestion-table thead {
+            position: sticky;
+            top: 0;
+            background-color: #f3f4f6;
+            z-index: 10;
+            border-bottom: 2px solid #7c3aed;
+        }
+        .suggestion-table th {
+            padding: 8px 10px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 12px;
+        }
+        .suggestion-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1f2937;
+        }
+        .suggestion-table tbody tr:hover {
+            background-color: #f5f3ff;
+            cursor: pointer;
+        }
+
+        dialog {
+            border: none;
+            border-radius: 8px;
+            padding: 25px;
+            margin: auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            outline: none;
+            width: 350px;
+            font-family: inherit;
+        }
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        .modal-content {
+            text-align: center;
+        }
+        #modal_text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        #modal_close_btn {
+            background-color: #7c3aed;
+            color: white;
+            padding: 7px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #modal_close_btn:hover { background-color: #6d28d9; }
+
+        #unsaved_modal {
+            border: none;
+            border-radius: 12px;
+            padding: 30px;
+            width: 420px;
+            font-family: inherit;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        #unsaved_modal h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #unsaved_modal p {
+            font-size: 14px;
+            color: #4b5563;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+        .unsaved-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        #unsaved_save_btn {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #unsaved_save_btn:hover { background-color: #16a34a; }
+        #unsaved_discard_btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #unsaved_discard_btn:hover { background-color: #dc2626; }
+        #unsaved_cancel_btn {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #unsaved_cancel_btn:hover { background-color: #d1d5db; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Hospital Management System</h1>
+        <h2>Medicine Master Entry</h2>
+        <div id="form_msg"></div>
+
+        <div class="inner-card">
+            <form id="medicine_form" novalidate>
+
+                 <div style="position: relative;">
+                    <label for="medicine_id">Medicine ID:</label>
+                    <div class="input-row w-id-row">
+                        <input type="text" id="medicine_id" class="w-short" readonly>
+                        <div class="find-new-group">
+                            <button type="button" id="find_btn">Find</button>
+                            <button type="button" id="new_btn" class="active">New</button>
+                        </div>
+                    </div>
+                    <div id="medicine_suggestions" class="suggestions-list" style="display:none;"></div>
+                </div>
+
+                <div>
+                    <label for="medicine_name">Medicine Name <span class="required">*</span>:</label>
+                    <input type="text" id="medicine_name" maxlength="200" class="w-long">
+                </div>
+
+                <div>
+                    <label for="unit_price">Unit Price (₹) <span class="required">*</span>:</label>
+                    <input type="number" id="unit_price" min="0" step="0.01" class="w-medium">
+                </div>
+
+                <div>
+                    <label for="reorder_level">Reorder Level <span class="info-icon" data-help="Enter the minimum stock number. If stock goes below this number, it means we need to order more.">ⓘ</span>:</label>
+                    <input type="number" id="reorder_level" min="0" class="w-medium">
+                </div>
+
+            </form>
+        </div>
+
+        <div class="buttons-container">
+            <button type="button" id="save_btn">Save</button>
+            <button type="button" id="prev_btn">Previous</button>
+            <button type="button" id="next_btn">Next</button>
+            <button type="button" id="exit_btn">Exit</button>
+        </div>
+
+    </div>
+
+    <dialog id="custom_modal">
+        <div class="modal-content">
+            <p id="modal_text"></p>
+            <button type="button" id="modal_close_btn">OK</button>
+        </div>
+    </dialog>
+
+    <dialog id="unsaved_modal">
+        <h3>Unsaved Changes</h3>
+        <p>You have unsaved changes. Save before moving on?</p>
+        <div class="unsaved-btns">
+            <button type="button" id="unsaved_save_btn">Yes</button>
+            <button type="button" id="unsaved_discard_btn">No</button>
+            <button type="button" id="unsaved_cancel_btn">Cancel</button>
+        </div>
+    </dialog>
+
+    <script src="medicine.js"></script>
+
+</body>
+</html>
